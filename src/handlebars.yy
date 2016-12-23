@@ -78,8 +78,27 @@ inverseChain
   | inverseAndProgram -> $1
   ;
 
+openNamedBlock
+  : OPEN_NAMED_BLOCK helperName blockParams? CLOSE -> { open: $1, path: $2, blockParams: $3, strip: yy.stripFlags($1, $4) }
+  ;
+
+namedBlockAndProgram
+  : openNamedBlock program -> { strip: $1.strip, program: $2 }
+  ;
+
+namedBlockChain
+  : openNamedBlock program namedBlockChain? {
+    var namedBlock = yy.prepareBlock($1, $2, $3, $3, false, @$),
+        program = yy.prepareProgram([namedBlock], $2.loc);
+    program.chained = true;
+
+    $$ = { strip: $1.strip, program: program, chain: true };
+  }
+  | namedBlockAndProgram -> $1
+  ;
+
 closeBlock
-  : OPEN_ENDBLOCK helperName CLOSE -> {path: $2, strip: yy.stripFlags($1, $3)}
+  : OPEN_ENDBLOCK helperName CLOSE -> { path: $2, strip: yy.stripFlags($1, $3) }
   ;
 
 mustache
