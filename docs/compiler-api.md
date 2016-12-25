@@ -147,6 +147,27 @@ interface DecoratorBlock <: Statement {
 
 Decorator paths only utilize the `path.original` value and as a consequence do not support depthed evaluation.
 
+##### Statements Addendum ([@sclaxton](https://github.com/sclaxton/handlebars.js/))
+
+```java
+interface BlockStatement <: Statement {
+    type: "BlockStatement";
+    path: PathExpression | Literal;
+    slotName: string;
+    params: [ Expression ];
+    hash: Hash;
+
+    program: Program | null;
+    inverse: Program | null;
+
+    openStrip: StripFlags | null;
+    inverseStrip: StripFlags | null;
+    closeStrip: StripFlags | null;
+}
+
+interface NamedBlockSlotStatement <: BlockStatement { }
+```
+
 ### Expressions
 
 ```java
