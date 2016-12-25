@@ -47,8 +47,13 @@ openRawBlock
   ;
 
 block
-  : openBlock program inverseChain? closeBlock -> yy.prepareBlock($1, $2, $3, $4, false, @$)
+  : openBlock program blockChain? closeBlock -> yy.prepareBlock($1, $2, $3, $4, false, @$)
   | openInverse program inverseAndProgram? closeBlock -> yy.prepareBlock($1, $2, $3, $4, true, @$)
+  ;
+
+blockChain
+  : inverseChain -> $1
+  | namedBlockSlotChain -> $1
   ;
 
 openBlock
@@ -78,23 +83,18 @@ inverseChain
   | inverseAndProgram -> $1
   ;
 
-openNamedBlock
-  : OPEN_NAMED_BLOCK helperName blockParams? CLOSE -> { open: $1, path: $2, blockParams: $3, strip: yy.stripFlags($1, $4) }
+openNamedBlockSlot
+  : OPEN_NAMED_BLOCK_SLOT helperName blockParams? CLOSE -> { open: $1, path: $2, blockParams: $3, strip: yy.stripFlags($1, $4) }
   ;
 
-namedBlockAndProgram
-  : openNamedBlock program -> { strip: $1.strip, program: $2 }
-  ;
-
-namedBlockChain
-  : openNamedBlock program namedBlockChain? {
-    var namedBlock = yy.prepareBlock($1, $2, $3, $3, false, @$),
-        program = yy.prepareProgram([namedBlock], $2.loc);
+namedBlockSlotChain
+  : openNamedBlockSlot program namedBlockSlotChain? {
+    var namedBlockSlot = yy.prepareNamedBlockSlot($1, $2, $3, $3, false, @$),
+        program = yy.prepareProgram([namedBlockSlot], $2.loc);
     program.chained = true;
 
     $$ = { strip: $1.strip, program: program, chain: true };
   }
-  | namedBlockAndProgram -> $1
   ;
 
 closeBlock

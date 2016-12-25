@@ -267,6 +267,90 @@ describe('parser', function() {
     });
   });
 
+  describe('named block slots', function() {
+    it('should parse named block slot syntax', function() {
+      equals(
+        astFor('{{#named-block}}{{::block-a}}{{/named-block}}'),
+        'BLOCK:\n' +
+        '  PATH:named-block []\n' +
+        '  PROGRAM:\n' +
+        '    NAMED BLOCK SLOT:\n' +
+        '      PATH:block-a SLOT:block-a []\n' +
+        '      PROGRAM:\n'
+      );
+    });
+    it('should parse multiple named block slots', function() {
+      equals(
+        astFor('{{#named-block}}{{::block-a}}{{::block-b}}{{/named-block}}'),
+        'BLOCK:\n' +
+        '  PATH:named-block []\n' +
+        '  PROGRAM:\n' +
+        '    NAMED BLOCK SLOT:\n' +
+        '      PATH:block-a SLOT:block-a []\n' +
+        '      PROGRAM:\n' +
+        '        NAMED BLOCK SLOT:\n' +
+        '          PATH:block-b SLOT:block-b []\n' +
+        '          PROGRAM:\n'
+      );
+    });
+    it('should parse named block slots with block params', function() {
+      equals(
+        astFor('{{#named-block}}{{::block-a as |a b|}}{{/named-block}}'),
+        'BLOCK:\n' +
+        '  PATH:named-block []\n' +
+        '  PROGRAM:\n' +
+        '    NAMED BLOCK SLOT:\n' +
+        '      PATH:block-a SLOT:block-a []\n' +
+        '      PROGRAM:\n' +
+        '        BLOCK PARAMS: [ a b ]\n'
+      );
+    });
+    it('should parse named block slots with content', function() {
+      equals(
+        astFor('{{#named-block}}{{::block-a as |a b|}}HELLO {{a}}!{{/named-block}}'),
+        "BLOCK:\n" + // eslint-disable-line quotes
+        "  PATH:named-block []\n" + // eslint-disable-line quotes
+        "  PROGRAM:\n" + // eslint-disable-line quotes
+        "    NAMED BLOCK SLOT:\n" + // eslint-disable-line quotes
+        "      PATH:block-a SLOT:block-a []\n" + // eslint-disable-line quotes
+        "      PROGRAM:\n" + // eslint-disable-line quotes
+        "        BLOCK PARAMS: [ a b ]\n" + // eslint-disable-line quotes
+        "        CONTENT[ 'HELLO ' ]\n" + // eslint-disable-line quotes
+        "        {{ PATH:a [] }}\n" + // eslint-disable-line quotes
+        "        CONTENT[ '!' ]\n" // eslint-disable-line quotes
+      );
+    });
+    it('should parse named block slot syntax with not default anonymous block', function() {
+      equals(
+        astFor('{{#named-block::block-a}}{{::block-b}}{{/named-block}}'),
+        'BLOCK:\n' +
+        '  PATH:named-block SLOT:block-a []\n' +
+        '  PROGRAM:\n' +
+        '    NAMED BLOCK SLOT:\n' +
+        '      PATH:block-b SLOT:block-b []\n' +
+        '      PROGRAM:\n'
+      );
+    });
+
+    it('should throw if a named block slot appears outside of a block', function() {
+      shouldThrow(function() {
+        astFor('{{::block-a}}{{#named-block}}{{/named-block}}');
+      }, Error);
+    });
+
+    it('should throw if params are passed to named block slot', function() {
+      shouldThrow(function() {
+        astFor('{{#named-block}}{{::block-a param}}{{/named-block}}');
+      }, Error);
+    });
+
+    it('should throw if hash values are set on named block slot', function() {
+      shouldThrow(function() {
+        astFor('{{#named-block}}{{::block-a hash=value}}{{/named-block}}');
+      }, Error);
+    });
+  });
+
   it('GH1024 - should track program location properly', function() {
     var p = Handlebars.parse('\n'
       + '  {{#if foo}}\n'

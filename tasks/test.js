@@ -5,7 +5,7 @@ module.exports = function(grunt) {
   grunt.registerTask('test:bin', function() {
     var done = this.async();
 
-    childProcess.exec('node ./bin/handlebars -a spec/artifacts/empty.handlebars', function(err, stdout) {
+    childProcess.exec('node ./bin/handlebars -a spec/artifacts/empty.handlebars', { env: { NODE_ENV: 'test' } }, function(err, stdout) {
       if (err) {
         throw err;
       }
@@ -22,7 +22,7 @@ module.exports = function(grunt) {
   grunt.registerTask('test:mocha', function() {
     var done = this.async();
 
-    var runner = childProcess.fork('./spec/env/runner', [], {stdio: 'inherit'});
+    var runner = childProcess.fork('./spec/env/runner', [], { stdio: 'inherit', env: { NODE_ENV: 'test' } });
     runner.on('close', function(code) {
       if (code != 0) {
         grunt.fatal(code + ' tests failed');
@@ -33,7 +33,7 @@ module.exports = function(grunt) {
   grunt.registerTask('test:cov', function() {
     var done = this.async();
 
-    var runner = childProcess.fork('node_modules/.bin/istanbul', ['cover', '--source-map', '--', './spec/env/runner.js'], {stdio: 'inherit'});
+    var runner = childProcess.fork('node_modules/.bin/istanbul', ['cover', '--source-map', '--', './spec/env/runner.js'], { stdio: 'inherit', env: { NODE_ENV: 'test' } });
     runner.on('close', function(code) {
       if (code != 0) {
         grunt.fatal(code + ' tests failed');
@@ -44,7 +44,7 @@ module.exports = function(grunt) {
   grunt.registerTask('test:min', function() {
     var done = this.async();
 
-    var runner = childProcess.fork('./spec/env/runner', ['--min'], {stdio: 'inherit'});
+    var runner = childProcess.fork('./spec/env/runner', ['--min'], { stdio: 'inherit', env: { NODE_ENV: 'test' } });
     runner.on('close', function(code) {
       if (code != 0) {
         grunt.fatal(code + ' tests failed');
@@ -56,7 +56,7 @@ module.exports = function(grunt) {
   grunt.registerTask('test:check-cov', function() {
     var done = this.async();
 
-    var runner = childProcess.fork('node_modules/.bin/istanbul', ['check-coverage', '--statements', '100', '--functions', '100', '--branches', '100', '--lines 100'], {stdio: 'inherit'});
+    var runner = childProcess.fork('node_modules/.bin/istanbul', ['check-coverage', '--statements', '100', '--functions', '100', '--branches', '100', '--lines 100'], { stdio: 'inherit', env: { NODE_ENV: 'test' } });
     runner.on('close', function(code) {
       if (code != 0) {
         grunt.fatal('Coverage check failed: ' + code);
