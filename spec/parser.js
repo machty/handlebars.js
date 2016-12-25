@@ -272,7 +272,7 @@ describe('parser', function() {
       equals(
         astFor('{{#named-block}}{{::block-a}}{{/named-block}}'),
         'BLOCK:\n' +
-        '  PATH:named-block []\n' +
+        '  PATH:named-block SLOT:|anonymous| []\n' +
         '  PROGRAM:\n' +
         '    NAMED BLOCK SLOT:\n' +
         '      PATH:block-a SLOT:block-a []\n' +
@@ -283,7 +283,7 @@ describe('parser', function() {
       equals(
         astFor('{{#named-block}}{{::block-a}}{{::block-b}}{{/named-block}}'),
         'BLOCK:\n' +
-        '  PATH:named-block []\n' +
+        '  PATH:named-block SLOT:|anonymous| []\n' +
         '  PROGRAM:\n' +
         '    NAMED BLOCK SLOT:\n' +
         '      PATH:block-a SLOT:block-a []\n' +
@@ -297,7 +297,7 @@ describe('parser', function() {
       equals(
         astFor('{{#named-block}}{{::block-a as |a b|}}{{/named-block}}'),
         'BLOCK:\n' +
-        '  PATH:named-block []\n' +
+        '  PATH:named-block SLOT:|anonymous| []\n' +
         '  PROGRAM:\n' +
         '    NAMED BLOCK SLOT:\n' +
         '      PATH:block-a SLOT:block-a []\n' +
@@ -308,16 +308,18 @@ describe('parser', function() {
     it('should parse named block slots with content', function() {
       equals(
         astFor('{{#named-block}}{{::block-a as |a b|}}HELLO {{a}}!{{/named-block}}'),
-        "BLOCK:\n" + // eslint-disable-line quotes
-        "  PATH:named-block []\n" + // eslint-disable-line quotes
-        "  PROGRAM:\n" + // eslint-disable-line quotes
-        "    NAMED BLOCK SLOT:\n" + // eslint-disable-line quotes
-        "      PATH:block-a SLOT:block-a []\n" + // eslint-disable-line quotes
-        "      PROGRAM:\n" + // eslint-disable-line quotes
-        "        BLOCK PARAMS: [ a b ]\n" + // eslint-disable-line quotes
-        "        CONTENT[ 'HELLO ' ]\n" + // eslint-disable-line quotes
-        "        {{ PATH:a [] }}\n" + // eslint-disable-line quotes
-        "        CONTENT[ '!' ]\n" // eslint-disable-line quotes
+        /* eslint-disable quotes */
+        "BLOCK:\n" +
+        "  PATH:named-block SLOT:|anonymous| []\n" +
+        "  PROGRAM:\n" +
+        "    NAMED BLOCK SLOT:\n" +
+        "      PATH:block-a SLOT:block-a []\n" +
+        "      PROGRAM:\n" +
+        "        BLOCK PARAMS: [ a b ]\n" +
+        "        CONTENT[ 'HELLO ' ]\n" +
+        "        {{ PATH:a [] }}\n" +
+        "        CONTENT[ '!' ]\n"
+        /* eslint-enable quotes */
       );
     });
     it('should parse named block slot syntax with not default anonymous block', function() {
@@ -347,6 +349,12 @@ describe('parser', function() {
     it('should throw if hash values are set on named block slot', function() {
       shouldThrow(function() {
         astFor('{{#named-block}}{{::block-a hash=value}}{{/named-block}}');
+      }, Error);
+    });
+
+    it('should throw if an inverse block is defined along with named block slots', function() {
+      shouldThrow(function() {
+        astFor('{{#named-block}}{{::block-a}}{{else}}{{/named-block}}');
       }, Error);
     });
   });
