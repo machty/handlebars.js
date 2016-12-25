@@ -1,6 +1,8 @@
 [![Travis Build Status](https://img.shields.io/travis/wycats/handlebars.js/master.svg)](https://travis-ci.org/wycats/handlebars.js)
 [![Selenium Test Status](https://saucelabs.com/buildstatus/handlebars)](https://saucelabs.com/u/handlebars)
 
+# WARNING: THIS IS AN EXPERIMENTAL FORK OF THE HANDLEBARS PARSER ONLY, PLEASE DON'T TRY TO USE FOR ANYTHING SERIOUS
+
 Handlebars.js
 =============
 
