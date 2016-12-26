@@ -311,11 +311,12 @@ describe('parser', function() {
     });
     it('should parse named block slots with content', function() {
       equals(
-        astFor('{{#named-block}}{{::block-a as |a b|}}HELLO {{a}}!{{/named-block}}'),
+        astFor('{{#named-block}}HI{{::block-a as |a b|}}HELLO {{a}}!{{/named-block}}'),
         /* eslint-disable quotes */
         "BLOCK:\n" +
         "  PATH:named-block SLOT:|anonymous| []\n" +
         "  PROGRAM:\n" +
+        "    CONTENT[ 'HI' ]\n" +
         "  {{^}}\n" +
         "    NAMED BLOCK SLOT:\n" +
         "      PATH:block-a SLOT:block-a []\n" +
@@ -327,7 +328,7 @@ describe('parser', function() {
         /* eslint-enable quotes */
       );
     });
-    it('should parse named block slot syntax with not default anonymous block', function() {
+    it('should parse named block slot syntax with no default anonymous block', function() {
       equals(
         astFor('{{#named-block::block-a}}{{::block-b}}{{/named-block}}'),
         'BLOCK:\n' +
@@ -361,6 +362,9 @@ describe('parser', function() {
     it('should throw if an inverse block is defined along with named block slots', function() {
       shouldThrow(function() {
         astFor('{{#named-block}}{{::block-a}}{{else}}{{/named-block}}');
+      }, Error);
+      shouldThrow(function() {
+        astFor('{{#named-block}}{{::block-a}}{{^}}{{/named-block}}');
       }, Error);
     });
   });
