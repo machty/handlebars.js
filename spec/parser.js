@@ -274,6 +274,7 @@ describe('parser', function() {
         'BLOCK:\n' +
         '  PATH:named-block SLOT:|anonymous| []\n' +
         '  PROGRAM:\n' +
+        '  {{^}}\n' +
         '    NAMED BLOCK SLOT:\n' +
         '      PATH:block-a SLOT:block-a []\n' +
         '      PROGRAM:\n'
@@ -285,9 +286,11 @@ describe('parser', function() {
         'BLOCK:\n' +
         '  PATH:named-block SLOT:|anonymous| []\n' +
         '  PROGRAM:\n' +
+        '  {{^}}\n' +
         '    NAMED BLOCK SLOT:\n' +
         '      PATH:block-a SLOT:block-a []\n' +
         '      PROGRAM:\n' +
+        '      {{^}}\n' +
         '        NAMED BLOCK SLOT:\n' +
         '          PATH:block-b SLOT:block-b []\n' +
         '          PROGRAM:\n'
@@ -299,6 +302,7 @@ describe('parser', function() {
         'BLOCK:\n' +
         '  PATH:named-block SLOT:|anonymous| []\n' +
         '  PROGRAM:\n' +
+        '  {{^}}\n' +
         '    NAMED BLOCK SLOT:\n' +
         '      PATH:block-a SLOT:block-a []\n' +
         '      PROGRAM:\n' +
@@ -312,6 +316,7 @@ describe('parser', function() {
         "BLOCK:\n" +
         "  PATH:named-block SLOT:|anonymous| []\n" +
         "  PROGRAM:\n" +
+        "  {{^}}\n" +
         "    NAMED BLOCK SLOT:\n" +
         "      PATH:block-a SLOT:block-a []\n" +
         "      PROGRAM:\n" +
@@ -328,6 +333,7 @@ describe('parser', function() {
         'BLOCK:\n' +
         '  PATH:named-block SLOT:block-a []\n' +
         '  PROGRAM:\n' +
+        '  {{^}}\n' +
         '    NAMED BLOCK SLOT:\n' +
         '      PATH:block-b SLOT:block-b []\n' +
         '      PROGRAM:\n'
