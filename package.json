@@ -1,9 +1,9 @@
 {
-  "name": "handlebars",
+  "name": "@sclaxton/handlebars",
   "barename": "handlebars",
-  "version": "4.0.5",
-  "description": "Handlebars provides the power necessary to let you build semantic templates effectively with no frustration",
-  "homepage": "http://www.handlebarsjs.com/",
+  "version": "0.0.0",
+  "description": "Experimental fork of the handlebars parser",
+  "homepage": "",
   "keywords": [
     "handlebars",
     "mustache",
@@ -12,7 +12,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/wycats/handlebars.js.git"
+    "url": "https://github.com/sclaxton/handlebars.js.git"
   },
   "author": "Yehuda Katz",
   "license": "MIT",
