@@ -87,14 +87,25 @@ openNamedBlockSlot
   : OPEN_NAMED_BLOCK_SLOT helperName blockParams? CLOSE -> { open: $1, path: $2, blockParams: $3, strip: yy.stripFlags($1, $4) }
   ;
 
+namedBlockSlotAndProgram
+  : openNamedBlockSlot program {
+    var namedBlockSlot = yy.prepareNamedBlockSlot($1, $2, null, null, false, @$),
+        program = yy.prepareProgram([namedBlockSlot], $2.loc);
+    program.chained = false;
+
+    $$ = { strip: $1.strip, program: program, chain: false };
+  }
+  ;
+
 namedBlockSlotChain
-  : openNamedBlockSlot program namedBlockSlotChain? {
+  : openNamedBlockSlot program namedBlockSlotChain {
     var namedBlockSlot = yy.prepareNamedBlockSlot($1, $2, $3, $3, false, @$),
         program = yy.prepareProgram([namedBlockSlot], $2.loc);
     program.chained = true;
 
     $$ = { strip: $1.strip, program: program, chain: true };
   }
+  | namedBlockSlotAndProgram -> $1
   ;
 
 closeBlock
