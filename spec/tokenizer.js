@@ -441,4 +441,38 @@ describe('Tokenizer', function() {
     result = tokenize('{{else foo as |bar baz|}}');
     shouldMatchTokens(result, ['OPEN_INVERSE_CHAIN', 'ID', 'OPEN_BLOCK_PARAMS', 'ID', 'ID', 'CLOSE_BLOCK_PARAMS', 'CLOSE']);
   });
+
+  it('tokenizes lambda blocks', function() {
+    var result = tokenize(`{{foo lam=(|a|
+      <p>{{a}}</p>
+    )}}`);
+    shouldBeToken(result[2], 'ID', 'lam');
+    shouldBeToken(result[4], 'OPEN_LAMBDA', '(|');
+    shouldBeToken(result[5], 'LAMBDA_BLOCK_PARAM', 'a');
+    shouldBeToken(result[6], 'LAMBDA_CONTENT_LINE', '      <p>{{a}}</p>\n');
+    shouldBeToken(result[7], 'CLOSE_LAMBDA', '    )');
+
+    result = tokenize(`{{foo lam=(|a b c|
+      <p>{{a}}</p>
+
+      <p>{{a}}</p>
+    )}}`);
+    shouldMatchTokens(result, ['OPEN', 'ID', 'ID', 'EQUALS', 'OPEN_LAMBDA', 'LAMBDA_BLOCK_PARAM', 'LAMBDA_BLOCK_PARAM', 'LAMBDA_BLOCK_PARAM', 'LAMBDA_CONTENT_LINE', 'LAMBDA_CONTENT_LINE', 'LAMBDA_CONTENT_LINE', 'CLOSE_LAMBDA', 'CLOSE']);
+
+    /*
+    TODO: make recursively nested lambdas work
+    result = tokenize(`{{foo lam=(|a|
+        <p>{{a}}</p>
+        <p>{{a}}</p>
+      )
+      lam2=(|b|
+        {{foo
+          lam=(|b|
+            <p></p>
+          )
+        }}
+      )
+    }}`);
+    */
+  });
 });
