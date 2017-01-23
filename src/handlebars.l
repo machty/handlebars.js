@@ -1,5 +1,5 @@
 
-%x mu emu com raw
+%x mu emu com raw lambdaBlock lambdaBlockParams
 
 %{
 
@@ -69,6 +69,14 @@ ID    [^\s!"#%-,\.\/;->@\[-\^`\{-~]+/{LOOKAHEAD}
   this.popState();
   return 'COMMENT';
 }
+
+<mu>"(|"                         this.begin('lambdaBlockParams'); return 'OPEN_LAMBDA';
+<lambdaBlockParams>\s+           // ignore whitespace
+<lambdaBlockParams>[^\s|]+       return 'LAMBDA_BLOCK_PARAM';
+<lambdaBlockParams>"|"[^\n]*[\n] this.popState(); this.begin('lambdaBlock');
+
+<lambdaBlock>[\s]*")"            this.popState(); return 'CLOSE_LAMBDA';
+<lambdaBlock>[^\x00\n]*[\n]      return 'LAMBDA_CONTENT_LINE';
 
 <mu>"("                          return 'OPEN_SEXPR';
 <mu>")"                          return 'CLOSE_SEXPR';

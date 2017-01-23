@@ -1,5 +1,5 @@
 {
-  "name": "@sclaxton/handlebars",
+  "name": "@machty/handlebars",
   "barename": "handlebars",
   "version": "0.0.2",
   "description": "Experimental fork of the handlebars parser",

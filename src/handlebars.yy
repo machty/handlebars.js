@@ -142,6 +142,7 @@ openPartialBlock
 param
   : helperName -> $1
   | sexpr -> $1
+  | lambdaBlock -> $1
   ;
 
 sexpr
@@ -166,6 +167,16 @@ hashSegment
 blockParams
   : OPEN_BLOCK_PARAMS ID+ CLOSE_BLOCK_PARAMS -> yy.id($2)
   ;
+
+lambdaBlock
+  : OPEN_LAMBDA LAMBDA_BLOCK_PARAM* LAMBDA_CONTENT_LINE* CLOSE_LAMBDA {
+    $$ = {
+      type: 'LambdaBlock',
+      blockParams: $2,
+      contentLines: $3,
+      loc: yy.locInfo(@$)
+    };
+  };
 
 helperName
   : path -> $1
